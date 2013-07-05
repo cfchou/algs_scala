@@ -4,7 +4,7 @@
  * Date: 02/07/2013
  */
 
-// evaluate expressions like: ( 1 + ( 2 + 3 ) * ( 4 * 5 ) ) )
+// evaluate expressions like: ( ( 1 + ( 2 + 3 ) ) * ( 4 * 5 ) ) )
 object eval extends App {
 
   type BiOp = Function2[Int, Int, Int]
