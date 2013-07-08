@@ -10,23 +10,23 @@ object sortin {
   /* ----------------------------------------
    * Selection sort, in ascending order
    */
-  // 1. def selection[T](src: List[T])(implicit ev: Ordering[T]): List[T]
+  // 1. def selection_sort[T](src: List[T])(implicit ev: Ordering[T]): List[T]
   // 2. view bound, there's an implicit conversion(T => Comparable[T]) in Predef
-  //    def selection[T <% Comparable[T]](src: List[T]): List[T]
+  //    def selection_sort[T <% Comparable[T]](src: List[T]): List[T]
   // 3. context bound, translated to 1.
-  //    def selection[T: Ordering](src: List[T]): List[T]
+  //    def selection_sort[T: Ordering](src: List[T]): List[T]
 
   import Ordering.Implicits._  // needed for 1 and 3 to provide ">"
-  def selection[T: Ordering](src: List[T]): List[T] = {
+  def selection_sort[T: Ordering](src: List[T]): List[T] = {
     if (src.isEmpty) List.empty[T]
     else {
       val x::xs = select[T]((a, b) => a < b)(src) // ascending order
-      x::selection(xs)
+      x::selection_sort(xs)
     }
   }
 
   // tail-recursive version
-  def selection_tr[T: Ordering](src: List[T]): List[T] = {
+  def selection_sort_tr[T: Ordering](src: List[T]): List[T] = {
     def tr[T: Ordering](src: List[T], rev_sorted: List[T]): List[T] = {
       if (src.isEmpty) rev_sorted
       else {
@@ -52,6 +52,11 @@ object sortin {
   /* -------------------------------------
   * Insertion sort, in ascending order
   */
+  def insertion_sort[T: Ordering](src: List[T]): List[T] = {
+    src.foldLeft(List.empty[T]) { (lst, e) =>
+      insert[T]((a, b) => a < b)(lst, e)  // ascending order
+    }
+  }
 
   // FIXME: it traverses the whole "lst", which might not be necessary.
   private def insert[T](pred: (T, T) => Boolean)(lst: List[T], a: T): List[T] = {
@@ -59,12 +64,6 @@ object sortin {
       val h = acc.head
       if (pred(h, b)) h::b::acc.tail
       else b::acc
-    }
-  }
-
-  def insertion[T: Ordering](src: List[T]): List[T] = {
-    src.foldLeft(List.empty[T]) { (lst, e) =>
-      insert[T]((a, b) => a < b)(lst, e)  // ascending order
     }
   }
 
@@ -87,6 +86,14 @@ object sortin {
   /* -------------------------------------
   * Merge sort, in ascending order
   */
+  def merge_sort[T: Ordering](src: List[T]): List[T] = {
+    if (src.size <= 1) src
+    else {
+      val (l, r) = src.splitAt(src.size / 2)
+      merge(merge_sort(l), merge_sort(r))
+    }
+  }
+
   def merge[T: Ordering](lhs: List[T], rhs: List[T]): List[T] = {
     def mrg(xs: List[T], ys: List[T], zs: List[T]): List[T] = {
       if (xs.isEmpty) ys.reverse ++ zs
@@ -103,14 +110,33 @@ object sortin {
   }
 
 
-  def merge_sort[T: Ordering](src: List[T]): List[T] = {
-    if (src.size <= 1) src
-    else {
-      val (l, r) = src.splitAt(src.size / 2)
-      merge(merge_sort(l), merge_sort(r))
+
+  /* -------------------------------------
+  * Quick sort, in ascending order
+  */
+  def quick_sort[T: Ordering](src: List[T]): List[T] = {
+
+    // Median-of-three partitioning
+    // Assume lst.size >= 3
+    def partition(lst: List[T]): (List[T], List[T]) = {
+      val p =  insertion_sort(lst.take(3)).apply(1)
+      lst.foldLeft (List.empty[T], List.empty[T]) { (part, e) =>
+        if (e < p) (e::part._1, part._2)
+        else (part._1, e::part._2)
+      }
     }
+
+    // FIXME: '++' is very inefficient
+    def sort(lst: List[T]): List[T] = {
+      // improve performance by insertion sort on small lists
+      if (lst.size <= 5) insertion_sort(lst)
+      else {
+        val (lhs, rhs) = partition(lst)
+        sort(lhs) ++ (rhs.head :: sort(rhs.tail))
+      }
+    }
+
+    val good_src = util.Random.shuffle(src)
+    sort(good_src)
   }
-
-
-
 }

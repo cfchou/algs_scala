@@ -22,15 +22,15 @@ class testSuite extends FunSuite {
     import sortin._
     val src = List(5, 4, 3, 2, 1)
     val dst = src.reverse
-    assert(dst === selection(src))
-    assert(dst === selection_tr(src))
+    assert(dst === selection_sort(src))
+    assert(dst === selection_sort_tr(src))
   }
 
   test("Insertion sort:") {
     import sortin._
     val src = List(5, 4, 3, 2, 1)
     val dst = src.reverse
-    assert(dst === insertion(src))
+    assert(dst === insertion_sort(src))
   }
 
   test("Merge sort:") {
