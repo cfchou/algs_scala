@@ -71,6 +71,7 @@ object sortin {
   /* -------------------------------------
   * Uniformly randomly shuffle items in the given list.
   * Note: there's an API util.Random.shuffle
+  * FIXME: '++' in the last line makes shuffleTo non-linear.
   */
   def shuffleTo[T](src: List[T]): List[T] = {
     import util.Random
@@ -82,5 +83,34 @@ object sortin {
       xs ++ (e::ys)
     }
   }
+
+  /* -------------------------------------
+  * Merge sort, in ascending order
+  */
+  def merge[T: Ordering](lhs: List[T], rhs: List[T]): List[T] = {
+    def mrg(xs: List[T], ys: List[T], zs: List[T]): List[T] = {
+      if (xs.isEmpty) ys.reverse ++ zs
+      else if (ys.isEmpty) xs.reverse ++ zs
+      else {
+        val x = xs.head
+        val y = ys.head
+        if (x < y) mrg(xs.tail, ys, x::zs)
+        else mrg(xs, ys.tail, y::zs)
+      }
+    }
+
+    mrg(lhs, rhs, List.empty[T]).reverse
+  }
+
+
+  def merge_sort[T: Ordering](src: List[T]): List[T] = {
+    if (src.size <= 1) src
+    else {
+      val (l, r) = src.splitAt(src.size / 2)
+      merge(merge_sort(l), merge_sort(r))
+    }
+  }
+
+
 
 }

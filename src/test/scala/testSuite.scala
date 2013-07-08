@@ -33,6 +33,12 @@ class testSuite extends FunSuite {
     assert(dst === insertion(src))
   }
 
+  test("Merge sort:") {
+    import sortin._
+    val src = List(5, 4, 3, 2, 1)
+    val dst = src.reverse
+    assert(dst === merge_sort(src))
+  }
 
 
 
