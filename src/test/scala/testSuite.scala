@@ -20,9 +20,20 @@ class testSuite extends FunSuite {
 
   test("Selection sort:") {
     import sortin._
-    val src = List(1, 2, 3, 4, 5)
+    val src = List(5, 4, 3, 2, 1)
     val dst = src.reverse
     assert(dst === selection(src))
     assert(dst === selection_tr(src))
   }
+
+  test("Insertion sort:") {
+    import sortin._
+    val src = List(5, 4, 3, 2, 1)
+    val dst = src.reverse
+    assert(dst === insertion(src))
+  }
+
+
+
+
 }
