@@ -156,7 +156,7 @@ object sortin {
   def quick_sort_3w[T](src: List[T])(implicit ev: Ordering[T], tag: ClassTag[T]): List[T] = {
 
     def sort(arr: Array[T], lo: Int, hi: Int): Array[T] = {
-      if (lo != hi) {
+      if (lo < hi) {
         val (le, ge) = partition_3w(arr, lo, hi)
         if (le > lo) sort(arr, lo, le - 1)
         if (ge < hi) sort(arr, ge + 1, hi)

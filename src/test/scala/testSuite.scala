@@ -1,13 +1,15 @@
 package test
 import main._
 import org.scalatest.FunSuite
+import org.scalatest.prop.Checkers
+
 /**
  * User: Chifeng.Chou
  * Date: 05/07/13
  * Time: 16:09
  */
 
-class testSuite extends FunSuite {
+class testSuite extends FunSuite with Checkers {
   test("QuickFind: before any union") {
     val QF_SIZE = 10
     val uf = new QuickFind(QF_SIZE)
@@ -47,36 +49,6 @@ class testSuite extends FunSuite {
     assert(dst === quick_sort(src))
   }
 
-  test("3-way partition 1:") {
-    import sortin._
-    val src = Array(3, 4, 5, 2, 1)
-    assert((2, 2) === partition_3w(src, 0, src.size - 1))
-  }
-
-  test("3-way partition 2:") {
-    import sortin._
-    val src = Array(1, 1, 1, 1, 1)
-    assert((0, 4) === partition_3w(src, 0, src.size - 1))
-  }
-
-  test("3-way partition 3:") {
-    import sortin._
-    val src = Array(5, 4, 3, 2, 1)
-    assert((4, 4) === partition_3w(src, 0, src.size - 1))
-  }
-
-  test("3-way partition 4:") {
-    import sortin._
-    val src = Array(1, 2, 3, 4, 5)
-    assert((0, 0) === partition_3w(src, 0, src.size - 1))
-  }
-
-  test("3-way partition 5:") {
-    import sortin._
-    val src = Array(4, 2, 3, 4, 5)
-    assert((2, 3) === partition_3w(src, 0, src.size - 1))
-  }
-
   test("3-way Quick sort:") {
     import sortin._
     val src = List(5, 4, 3, 2, 1)
@@ -89,5 +61,37 @@ class testSuite extends FunSuite {
     val src = List(5, 4, 3, 2, 1)
     val dst = src.reverse
     assert(src === quick_sort_3w_rev(dst))
+  }
+
+  /* -------------------------------
+  Property-based tests
+  ScalaCheck style
+   */
+
+  // The 3 partitions from @arr should be >, = , < @arr(0) respectively.
+  test("3-way partition property check:") {
+    import sortin._
+    def validRange = { (arr: Array[Int]) =>
+      if (!arr.isEmpty) {
+        val p = arr(0)
+        val (le, ge) = partition_3w(arr, 0, arr.size - 1)
+        val (a, b) = arr.splitAt(le)
+        var (c, d) = b.splitAt(ge - le + 1)
+        a.forall(_ < p) && c.forall(_ == p) && d.forall(_ > p)
+      } else true
+    }
+    check(validRange)
+  }
+
+  // Given an List @lst, the ascending-ordered @lst should be the reverse of
+  // the descending ordered @lst.
+  test("3-way Quick sort property check:") {
+    import sortin._
+    def isReverse = { (arr: List[Int]) =>
+      val a = quick_sort_3w(arr)
+      val b = quick_sort_3w_rev(arr)
+      a == b.reverse
+    }
+    check(isReverse)
   }
 }
