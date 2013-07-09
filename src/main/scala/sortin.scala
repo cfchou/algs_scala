@@ -139,4 +139,66 @@ object sortin {
     val good_src = util.Random.shuffle(src)
     sort(good_src)
   }
+
+
+
+  /* 3-way quick sort
+  *  good: fast, in-place
+  *  bad: impure
+  */
+
+  // 1. ClassManifest is obsolete
+  //    import reflect.ClassManifest
+  //    def quick_sort_3w[T: Ordering](src: List[T])(implicit m: ClassManifest[T]): List[T]
+  // 2. can't have context/view bounds with implicit list at the same time
+
+  import reflect.ClassTag
+  def quick_sort_3w[T](src: List[T])(implicit ev: Ordering[T], tag: ClassTag[T]): List[T] = {
+
+    def sort(arr: Array[T], lo: Int, hi: Int): Array[T] = {
+      if (lo != hi) {
+        val (le, ge) = partition_3w(arr, lo, hi)
+        if (le > lo) sort(arr, lo, le - 1)
+        if (ge < hi) sort(arr, ge + 1, hi)
+      }
+      arr
+    }
+
+    val good_src = util.Random.shuffle(src)
+    val arr = good_src.toArray[T]
+    sort(arr, 0, arr.size - 1).toList
+  }
+
+  def quick_sort_3w_rev[T](src: List[T])(implicit ev: Ordering[T], tag: ClassTag[T]): List[T] = {
+    quick_sort_3w(src: List[T])(ev.reverse, tag)
+  }
+
+  /* -------------------------------------
+   * impure helpers
+  */
+  def exch[T: Ordering](src: Array[T], i: Int, j: Int): Unit = {
+    val t = src(i)
+    src(i) = src(j)
+    src(j) = t
+  }
+
+  // [lo, le), [le, ge], (ge, hi]
+  def partition_3w[T](arr: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): (Int, Int) = {
+    val p = arr(lo)
+    var le = lo
+    var ge = hi
+    var i = le + 1
+    while (i <= ge) {
+      if (ord.lt(arr(i), p)) {
+        exch(arr, i, le)
+        le = le + 1
+      } else if (ord.gt(arr(i), p)) {
+        exch(arr, i, ge)
+        ge = ge - 1
+      } else {
+        i = i + 1
+      }
+    }
+    (le, ge)
+  }
 }
