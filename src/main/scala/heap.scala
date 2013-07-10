@@ -77,4 +77,40 @@ object heap {
     }
   }
 
+
+  trait IndexMinHeap[T <: Ordering[T], CC <: IndexMinHeap[T, CC]] {
+    def insert(key: Int, e: T): Unit
+    def min: (Int, T)  // O(1)
+    def delMin: (Int, T) // O(log N)
+
+    def isEmpty: Boolean = this.size == 0
+    def size: Int
+
+    // if there's an element associated with @key, O(1)
+    def contains(key: Int): Boolean
+
+    // query element associated with @key, O(1)
+    // assert(contains(key))
+    def query(key: Int): T
+
+    // change element associated with @key to @e, O(log N)
+    // assert(contains(key))
+    def change(key: Int, e: T): Unit
+
+    // delete the element associated with @key, O(log N)
+    // assert(contains(key))
+    def delete(key: Int): Unit
+  }
+
+  class ArrIndexMinHeap[T <: Ordering[T]](initSize: Int) (implicit tagT: ClassTag[T])
+    extends IndexMinHeap[T, ArrIndexMinHeap[T]] {
+
+  }
+
+
+
+
+
+
+
 }
