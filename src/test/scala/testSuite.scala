@@ -83,7 +83,7 @@ class testSuite extends FunSuite with Checkers {
     check(validRange)
   }
 
-  // Given an List @lst, the ascending-ordered @lst should be the reverse of
+  // Given a List @lst, the ascending-ordered @lst should be the reverse of
   // the descending ordered @lst.
   test("3-way Quick sort property check:") {
     import sortin._

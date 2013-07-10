@@ -176,11 +176,7 @@ object sortin {
   /* -------------------------------------
    * impure helpers
   */
-  def exch[T: Ordering](src: Array[T], i: Int, j: Int): Unit = {
-    val t = src(i)
-    src(i) = src(j)
-    src(j) = t
-  }
+  import utili._
 
   // [lo, le), [le, ge], (ge, hi]
   def partition_3w[T](arr: Array[T], lo: Int, hi: Int)(implicit ord: Ordering[T]): (Int, Int) = {
