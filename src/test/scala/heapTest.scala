@@ -1,8 +1,8 @@
 package test
-import main.heap.ArrMaxHeap
+import main.heap.{ArrIndexMinHeap, ArrMaxHeap}
 import main.sortin._
 import org.scalatest.FunSuite
-import org.scalatest.prop.Checkers
+import org.scalatest.prop.{PropertyChecks, Checkers}
 
 /**
  * User: Chifeng.Chou
