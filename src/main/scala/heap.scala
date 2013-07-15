@@ -84,7 +84,7 @@ object heap {
 
     // [0, maxKey] are allowed when insert
     def maxKey: Int
-    def incMaxKeyBy(n: Int): Unit
+    def incMaxKeyTo(n: Int): Unit
 
     def insert(key: Int, e: T): Unit
     def min: (Int, T)  // O(1)
@@ -114,8 +114,6 @@ object heap {
                            tagT: ClassTag[T])
     extends IndexMinHeap[T, ArrIndexMinHeap[T]] {
 
-    //def this()(implicit ev: Ordering[T], tag: ClassTag[T]) = this(5)
-    //def this()(implicit tag: ClassTag[T]) = this(5)
     def this()(implicit cmp: Ordering[T], tagT: ClassTag[T]) = this(5)
 
     // stores (key, item) tuple
@@ -129,10 +127,11 @@ object heap {
 
 
     def maxKey = karr.size - 1 // karr.size == arr.size
-    def incMaxKeyBy(n: Int): Unit = {
-      if (n < 1) throw new IllegalArgumentException
-      arr = arr ++ (new Array[(Int, T)](n))
-      karr = karr ++ (Array.fill[Int](n)(-1))
+    def incMaxKeyTo(newMax: Int): Unit = {
+      val inc = newMax - maxKey
+      if (inc < 0) throw new IllegalArgumentException
+      arr = arr ++ (new Array[(Int, T)](inc))
+      karr = karr ++ (Array.fill[Int](inc)(-1))
     }
 
     private def swim(i: Int): Unit = {
