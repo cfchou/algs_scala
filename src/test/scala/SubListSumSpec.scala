@@ -23,6 +23,7 @@ class SubListSumSpec
   with ShouldMatchers {
 
   import SubListSumSpec._
+
   "test of subListSum of " + arr1.toString + " equals 22 " should {
     subListSum(arr1, 22) should be (true)
   }
@@ -61,7 +62,11 @@ class SubListSumSpec
   }
 
   // ===================================================
+  "test of subListSumZero of " + arr3.toString should {
+    subListSumZero(arr3) should be (false)
+  }
+
   "test of subListSumZero of " + arr4.toString should {
-    subListSumZero(arr3) should be (true)
+    subListSumZero(arr4) should be (true)
   }
 }

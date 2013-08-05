@@ -40,9 +40,9 @@ object SubListSum {
 
 
   def subListSumZero(nums: IndexedSeq[Int]): Boolean = {
+
     val (pns, nns) = nums.partition(_ >= 0)
     val pns2 = nns.map(_ * -1)
-    val maxCap = math.min(pns.sum, pns2.sum)
 
     def satisfy(k: Int): Boolean = {
       if (k == 0) false
@@ -50,7 +50,14 @@ object SubListSum {
       else satisfy(k - 1)
     }
 
-    if (maxCap == 0) true
-    else satisfy(maxCap)
+    val psum = pns.sum
+    val nsum = pns2.sum
+    if ((psum == 0 && nsum != 0) || (psum != 0 && nsum == 0))
+      false
+    else {
+      val maxCap = math.min(pns.sum, pns2.sum)
+      if (maxCap == 0) true
+      else satisfy(maxCap)
+    }
   }
 }
